@@ -8,6 +8,10 @@ class MyLogin extends StatefulWidget {
 }
 
 class _MyLoginState extends State<MyLogin> {
+  final _formKey = GlobalKey<FormState>();
+  //controllers
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,67 +35,96 @@ class _MyLoginState extends State<MyLogin> {
               child: Container(
                 padding: EdgeInsets.only(top: MediaQuery.of(context).size
                 .height*0.5,right: 35,left: 35),
-                child: Column(
-                  children: [
-                    TextField(
-                      decoration: InputDecoration(
-                        suffixIcon: Icon(Icons.email),
-                        hintText: 'Email',
-                        fillColor: Colors.grey.shade100,
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        )
-                      ),
-                    ),
-                    SizedBox(height: 30,),
-                    TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                          suffixIcon: Icon(Icons.lock),
-                          hintText: 'Password',
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          suffixIcon: Icon(Icons.email),
+                          hintText: 'Email',
                           fillColor: Colors.grey.shade100,
                           filled: true,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           )
-                      ),
-                    ),
-                    SizedBox(height: 30,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Sign In', style: TextStyle(fontSize: 27, fontWeight: FontWeight.w700, color: Color(0xff4c505b)),),
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Color(0xff4c505b),
-                          child: IconButton(onPressed: (){},
-                              color: Colors.white,
-                              icon: Icon(Icons.arrow_forward)),
-                        )
-                      ],
-                    ),
-                    SizedBox(height: 40,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(onPressed: (){
-                          Navigator.pushNamed(context, 'register');
+                        ),
+                        validator: (value){
+                          if(value == null || value.isEmpty){
+                            return 'Please enter your email';
+                          }else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                            return 'Please enter a valid email address';
+                          }else{
+                            return null;
+                          }
                         },
-                            child: Text("Sign Up", style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              fontSize: 18,
-                              color: Color(0xff4c505b),
-                            ),)),
-                        TextButton(onPressed: (){},
-                            child: Text("Forgot Password", style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              fontSize: 18,
-                              color: Color(0xff4c505b),
-                            ),))
-                      ],
-                    ),
-                  ],
+                      ),
+                      SizedBox(height: 30,),
+                      TextFormField(
+                        controller: passwordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                            suffixIcon: Icon(Icons.lock),
+                            hintText: 'Password',
+                            fillColor: Colors.grey.shade100,
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            )
+                        ),
+                        validator: (value){
+                          if(value == null || value.isEmpty){
+                            return 'please enter your password';
+                          }else if(value.length < 6){
+                            return 'Password must be at least 6 character';
+                          }else{
+                            return null;
+                          }
+                        },
+                      ),
+                      SizedBox(height: 30,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Sign In', style: TextStyle(fontSize: 27, fontWeight: FontWeight.w700, color: Color(0xff4c505b)),),
+                          CircleAvatar(
+                            radius: 30,
+                            backgroundColor: Color(0xff4c505b),
+                            child: IconButton(onPressed: (){
+                              if(_formKey.currentState!.validate()){
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Login Successful'))
+                                );
+                              }
+                            },
+                                color: Colors.white,
+                                icon: Icon(Icons.arrow_forward)),
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 40,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton(onPressed: (){
+                            Navigator.pushNamed(context, 'register');
+                          },
+                              child: Text("Sign Up", style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                fontSize: 18,
+                                color: Color(0xff4c505b),
+                              ),)),
+                          TextButton(onPressed: (){},
+                              child: Text("Forgot Password", style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                fontSize: 18,
+                                color: Color(0xff4c505b),
+                              ),))
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             )
